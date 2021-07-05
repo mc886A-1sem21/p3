@@ -48,5 +48,56 @@ class GreedyAgent(Agent):
         bestActions = [pair[1] for pair in scored if pair[0] == bestScore]
         return random.choice(bestActions)
 
+class EvolutionAgent(Agent):
+    def __init__(self, steps= ""):
+        self.steps = steps
+        self.pos = 0
+
+    def getAction(self, state):
+        if self.pos == len(self.steps):
+            self.pos = 0
+        legal = state.getLegalPacmanActions()
+        current = state.getPacmanState().configuration.direction
+
+        # Se o pacman se encontra parado, eu faço o current dele ser algo inicial
+        if current == Directions.STOP: 
+            current = Directions.NORTH
+
+        
+        next_action = self.steps[self.pos]
+        if next_action == 'L':
+            next_action = Directions.LEFT[current]
+        else:
+            next_action = Directions.RIGHT[current]
+
+        if next_action in legal:
+            self.pos = self.pos + 1
+            return next_action
+
+        # se ele está numa via válida, segue a vida
+        if current in legal: 
+            return current
+
+        return Directions.REVERSE[current]
+
+class ReinforcementAgent(Agent):
+    def __init__(self, evalFn="scoreEvaluation"):
+        self.evaluationFunction = util.lookup(evalFn, globals())
+        assert self.evaluationFunction != None
+
+    def getAction(self, state):
+        # Generate candidate actions
+        legal = state.getLegalPacmanActions()
+        if Directions.STOP in legal: legal.remove(Directions.STOP)
+
+        successors = [(state.generateSuccessor(0, action), action) for action in legal]
+        scored = [(self.evaluationFunction(state), action) for state, action in successors]
+        bestScore = max(scored)[0]
+        bestActions = [pair[1] for pair in scored if pair[0] == bestScore]
+        return random.choice(bestActions)
+
 def scoreEvaluation(state):
+    return state.getScore()
+    
+def timeEvaluation(state):
     return state.getScore()
