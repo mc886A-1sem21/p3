@@ -79,6 +79,11 @@ class EvolutionAgent(Agent):
             return current
 
         return Directions.REVERSE[current]
+    
+    def init_state(self):
+        # função que é chamada sempre q o jogo inicia para inicializar o agente na posição 0 e garantir que estou sempre
+        # percorrendo o mesmo caminho
+        self.pos = 0
 
 class ReinforcementAgent(Agent):
     def __init__(self, evalFn="scoreEvaluation"):
