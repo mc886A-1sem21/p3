@@ -45,6 +45,7 @@ from game import Directions
 from game import Actions
 from util import nearestPoint
 from util import manhattanDistance
+import featureExtractors
 import util, layout
 import sys, types, time, random, os
 
